@@ -1,0 +1,27 @@
+{
+  "name": "@biotope/build-plugin-hbs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "tsc -p tsconfig.json --watch",
+    "build": "tsc -p tsconfig.json",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "release": "np --no-yarn"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chokidar": "^3.1.0",
+    "deepmerge": "^4.0.0",
+    "fs-extra": "^8.1.0",
+    "glob": "^7.1.4",
+    "handlebars": "^4.2.0",
+    "set-value": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.5",
+    "typescript": "^3.6.3"
+  }
+}
