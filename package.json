@@ -1,6 +1,6 @@
 {
   "name": "@biotope/build-plugin-hbs",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "@types/node": "^12.7.5",
+    "np": "^5.1.0",
     "typescript": "^3.6.3"
   }
 }
