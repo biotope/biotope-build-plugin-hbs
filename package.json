@@ -25,5 +25,8 @@
     "jest": "^24.9.0",
     "np": "^5.1.0",
     "typescript": "^3.6.3"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
