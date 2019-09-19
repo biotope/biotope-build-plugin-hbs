@@ -1,6 +1,6 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import * as hbs from 'handlebars';
+import * as handlebars from 'handlebars';
 import * as glob from 'glob';
 import * as setValue from 'set-value';
 import { watch } from 'chokidar';
@@ -20,37 +20,40 @@ const compileHbs = (filepath: string, data: any, config) => {
   fs.writeFileSync(`${config.paths.distFolder}/${path.dirname(targetPath)}/${path.basename(targetPath, '.hbs')}.html`, template({data}));
 };
 
+const gatherData = (globString: string): any => {
+  const files = glob.sync(globString);
+  let collectedData = {};
+  files.forEach(filepath => {
+    const jsons = fs.readFileSync(filepath, {encoding: 'utf8'});
+    setValue(collectedData, filepath.replace('src/', '').replace('.json', '').replace(new RegExp('/', 'g'), '.'), JSON.parse(jsons));
+  });
+  return collectedData;
+}
+
+const registerPartials = (partialPattern: string, hbs) => {
+  const files = glob.sync(partialPattern)
+  files.forEach(filepath => {
+    const partial = fs.readFileSync(filepath, {encoding: 'utf8'})
+    const targetPath = filepath.substr(filepath.indexOf('/components/') + 1);
+    hbs.registerPartial(path.dirname(targetPath) + '/' + path.basename(targetPath, '.hbs') , partial)
+  });
+}
+
 export default (pluginOptions: Partial<BuildPluginHbsConfig> = {}) => {
   const pluginConfig = merge(defaultConfig, pluginOptions);
-  return (buildConfig, isServing) => {
-    registerHelpers(hbs);
-    const data = {};
+  return async (buildConfig, isServing) => {
+    registerHelpers(handlebars);
+    const templateData = gatherData(createGlobPattern(pluginConfig.dataPatterns));
+    registerPartials(createGlobPattern(pluginConfig.partialPatterns), handlebars)
     
-    glob(createGlobPattern(pluginConfig.dataPatterns), (err, files) => {
-      console.log('Data ', files);
-      
-      files.forEach(filepath => {
-        const jsons = fs.readFileSync(filepath, {encoding: 'utf8'});
-        setValue(data, filepath.replace('src/', '').replace('.json', '').replace(new RegExp('/', 'g'), '.'), JSON.parse(jsons));
-      });
-    })
-    glob(createGlobPattern(pluginConfig.partialPatterns), (err, files) => {
-      console.log('Files ', files);
-      
-      files.forEach(filepath => {
-        const partial = fs.readFileSync(filepath, {encoding: 'utf8'})
-        const targetPath = filepath.substr(filepath.indexOf('/components/') + 1);
-        hbs.registerPartial(path.dirname(targetPath) + '/' + path.basename(targetPath, '.hbs') , partial)
-      });
-    })
     if(isServing) {
       watch(createGlobPattern(pluginConfig.srcPatterns)).on('all', (err, filepath) => {
-        compileHbs(filepath, data, buildConfig)
+        compileHbs(filepath, templateData, buildConfig)
       });
     } else {
       glob(createGlobPattern(pluginConfig.srcPatterns), (err, filepaths) => {
         filepaths.forEach(filepath => {
-          compileHbs(filepath, data, buildConfig)
+          compileHbs(filepath, templateData, buildConfig)
         });
       });
     }
