@@ -48,12 +48,12 @@ export default (pluginOptions: Partial<BuildPluginHbsConfig> = {}) => {
     
     if(isServing) {
       watch(createGlobPattern(pluginConfig.srcPatterns)).on('all', (err, filepath) => {
-        compileHbs(filepath, templateData, buildConfig, handlebars)
+        compileHbs(filepath, templateData, handlebars, buildConfig)
       });
     } else {
       glob(createGlobPattern(pluginConfig.srcPatterns), (err, filepaths) => {
         filepaths.forEach(filepath => {
-          compileHbs(filepath, templateData, buildConfig, handlebars)
+          compileHbs(filepath, templateData, handlebars, buildConfig)
         });
       });
     }
