@@ -11,7 +11,7 @@ import { BuildPluginHbsConfig } from './typings/Config';
 
 const createGlobPattern = (array: string[]) => array.length === 1 ? array[0] : `{${array.join(',')}}`;
 
-const compileHbs = (filepath: string, data: any, config) => {
+const compileHbs = (filepath: string, data: any, hbs, config) => {
   const content = fs.readFileSync(filepath, {encoding: 'utf8'});
   const template = hbs.compile(content);
   const targetPath = filepath.substr(filepath.indexOf('/components/') + 1);
