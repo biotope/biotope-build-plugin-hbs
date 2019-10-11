@@ -19,7 +19,6 @@
     "fs-extra": "^8.1.0",
     "glob": "^7.1.4",
     "handlebars": "^4.2.0",
-    "nsdeclare": "^0.1.0",
     "set-value": "^3.0.1"
   },
   "devDependencies": {
