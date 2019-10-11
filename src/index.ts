@@ -7,7 +7,11 @@ import { watch } from 'chokidar';
 import * as merge from 'deepmerge';
 import registerHelpers from "./registerHelpers";
 import defaultConfig from './defaultConfig';
+import createRuntimeScript from './runtime';
 import { BuildPluginHbsConfig } from './typings/Config';
+import * as minify from '@node-minify/core';
+import * as uglifyjs from '@node-minify/uglify-js';
+
 
 const createGlobPattern = (array: string[]) => array.length === 1 ? array[0] : `{${array.join(',')}}`;
 
@@ -16,8 +20,7 @@ const compileHbs = (filepath: string, data: any, hbs, config) => {
   const template = hbs.compile(content);
   const targetPath = filepath.substr(filepath.indexOf('/components/') + 1);
       
-  fs.createFileSync(`${config.paths.distFolder}/${path.dirname(targetPath)}/${path.basename(targetPath, '.hbs')}.html`);
-  fs.writeFileSync(`${config.paths.distFolder}/${path.dirname(targetPath)}/${path.basename(targetPath, '.hbs')}.html`, template({data}));
+  fs.outputFileSync(`${config.paths.distFolder}/${path.dirname(targetPath)}/${path.basename(targetPath, '.hbs')}.html`, template({data}));
 };
 
 const gatherData = (globString: string): any => {
@@ -42,13 +45,16 @@ const registerPartials = (partialPattern: string, hbs) => {
 export default (pluginOptions: Partial<BuildPluginHbsConfig> = {}) => {
   const pluginConfig = merge(defaultConfig, pluginOptions);
   return async (buildConfig, isServing) => {
+    if(pluginConfig.enableRuntimeBuild) {
+      createRuntimeScript(pluginConfig, handlebars, `${buildConfig.paths.distFolder}/${pluginConfig.runtimeBuildPath}`)
+    }
     registerHelpers(handlebars);
     const templateData = gatherData(createGlobPattern(pluginConfig.dataPatterns));
     registerPartials(createGlobPattern(pluginConfig.partialPatterns), handlebars)
     
     if(isServing) {
       watch(createGlobPattern(pluginConfig.srcPatterns)).on('all', (err, filepath) => {
-        compileHbs(filepath, templateData, handlebars, buildConfig)
+        compileHbs(filepath, templateData, handlebars, buildConfig);
       });
     } else {
       glob(createGlobPattern(pluginConfig.srcPatterns), (err, filepaths) => {
