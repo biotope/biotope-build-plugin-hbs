@@ -9,8 +9,6 @@ import registerHelpers from "./registerHelpers";
 import defaultConfig from './defaultConfig';
 import createRuntimeScript from './runtime';
 import { BuildPluginHbsConfig } from './typings/Config';
-import * as minify from '@node-minify/core';
-import * as uglifyjs from '@node-minify/uglify-js';
 
 
 const createGlobPattern = (array: string[]) => array.length === 1 ? array[0] : `{${array.join(',')}}`;
