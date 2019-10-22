@@ -17,7 +17,7 @@
     "chokidar": "^3.1.0",
     "deepmerge": "^4.0.0",
     "fs-extra": "^8.1.0",
-    "glob": "^7.1.4",
+    "glob": "^7.1.5",
     "handlebars": "^4.2.0",
     "set-value": "^3.0.1"
   },
