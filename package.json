@@ -24,7 +24,7 @@
   "devDependencies": {
     "@types/node": "^12.7.5",
     "jest": "^24.9.0",
-    "np": "^5.1.0",
+    "np": "^5.1.2",
     "typescript": "^3.6.3"
   },
   "publishConfig": {
