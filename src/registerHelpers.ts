@@ -1,7 +1,9 @@
 import { bioDef } from "./helpers";
 import * as merge from 'deepmerge';
 
-const registerHelpers =  (handlebars) => {
+// Has to stay es5 as it is used as is in the browser
+
+const registerHelpers =  function(handlebars) {
   handlebars.registerHelper('bioDef', bioDef);
 
   /**
