@@ -18,7 +18,7 @@
     "deepmerge": "^4.2.2",
     "fs-extra": "^8.1.0",
     "glob": "^7.1.6",
-    "handlebars": "^4.5.2",
+    "handlebars": "^4.7.1",
     "set-value": "^3.0.1"
   },
   "devDependencies": {
